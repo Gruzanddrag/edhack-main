@@ -2,18 +2,15 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\JobSkillRepository;
+use App\Repository\InternshipCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
- * @ORM\Entity(repositoryClass=JobSkillRepository::class)
+ * @ORM\Entity(repositoryClass=InternshipCategoryRepository::class)
  */
-class JobSkill
+class InternshipCategory
 {
     /**
      * @ORM\Id
@@ -23,35 +20,25 @@ class JobSkill
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=500)
+     * @ORM\Column(type="string", length=3000)
      */
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Internship::class, mappedBy="requiredSkills")
+     * @ORM\OneToMany(targetEntity=Internship::class, mappedBy="catrgory")
      */
     private $internships;
 
-
     public function __construct()
     {
-        $this->jobs = new ArrayCollection();
         $this->internships = new ArrayCollection();
     }
 
-    /**
-     * @Groups({"job:collection:get", "job:item:get","internship:collection:get", "internship:item:get"})
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @Groups({"job:collection:get", "job:item:get","internship:collection:get", "internship:item:get"})
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
@@ -76,7 +63,7 @@ class JobSkill
     {
         if (!$this->internships->contains($internship)) {
             $this->internships[] = $internship;
-            $internship->addRequiredSkill($this);
+            $internship->setCatrgory($this);
         }
 
         return $this;
@@ -85,7 +72,10 @@ class JobSkill
     public function removeInternship(Internship $internship): self
     {
         if ($this->internships->removeElement($internship)) {
-            $internship->removeRequiredSkill($this);
+            // set the owning side to null (unless already changed)
+            if ($internship->getCatrgory() === $this) {
+                $internship->setCatrgory(null);
+            }
         }
 
         return $this;
