@@ -53,11 +53,6 @@ class User
     private $userProfile;
 
     /**
-     * @ORM\OneToMany(targetEntity=JobResponse::class, mappedBy="user")
-     */
-    private $jobResponses;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $email;
@@ -72,10 +67,15 @@ class User
      */
     private $internshipResponses;
 
+    /**
+     * @ORM\OneToMany(targetEntity=University::class, mappedBy="user")
+     */
+    private $university;
+
     public function __construct()
     {
-        $this->jobResponses = new ArrayCollection();
         $this->internshipResponses = new ArrayCollection();
+        $this->university = new ArrayCollection();
     }
 
     /**
@@ -178,37 +178,6 @@ class User
 
     /**
      * @Groups("user:read")
-     * @return Collection|JobResponse[]
-     */
-    public function getJobResponses(): Collection
-    {
-        return $this->jobResponses;
-    }
-
-    public function addJobResponse(JobResponse $jobResponse): self
-    {
-        if (!$this->jobResponses->contains($jobResponse)) {
-            $this->jobResponses[] = $jobResponse;
-            $jobResponse->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJobResponse(JobResponse $jobResponse): self
-    {
-        if ($this->jobResponses->removeElement($jobResponse)) {
-            // set the owning side to null (unless already changed)
-            if ($jobResponse->getUser() === $this) {
-                $jobResponse->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @Groups("user:read")
      * @return string|null
      */
     public function getEmail(): ?string
@@ -270,6 +239,37 @@ class User
             // set the owning side to null (unless already changed)
             if ($internshipResponse->getUser() === $this) {
                 $internshipResponse->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @Groups("user:read")
+     * @return Collection|University[]
+     */
+    public function getUniversity(): Collection
+    {
+        return $this->university;
+    }
+
+    public function addUniversity(University $university): self
+    {
+        if (!$this->university->contains($university)) {
+            $this->university[] = $university;
+            $university->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUniversity(University $university): self
+    {
+        if ($this->university->removeElement($university)) {
+            // set the owning side to null (unless already changed)
+            if ($university->getUser() === $this) {
+                $university->setUser(null);
             }
         }
 

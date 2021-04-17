@@ -48,18 +48,13 @@ class UserProfile
     private $telegram;
 
     /**
-     * @ORM\OneToMany(targetEntity=JobExperience::class, mappedBy="userProfile")
-     */
-    private $jobExperienses;
-
-    /**
      * @ORM\OneToOne(targetEntity=Speciality::class, cascade={"persist", "remove"})
      */
     private $speciality;
 
     public function __construct()
     {
-        $this->jobExperienses = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -139,37 +134,6 @@ class UserProfile
     public function setTelegram(string $telegram): self
     {
         $this->telegram = $telegram;
-
-        return $this;
-    }
-
-    /**
-     * @Groups("user:read")
-     * @return Collection|JobExperience[]
-     */
-    public function getJobExperienses(): Collection
-    {
-        return $this->jobExperienses;
-    }
-
-    public function addJobExperiense(JobExperience $jobExperiense): self
-    {
-        if (!$this->jobExperienses->contains($jobExperiense)) {
-            $this->jobExperienses[] = $jobExperiense;
-            $jobExperiense->setUserProfile($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJobExperiense(JobExperience $jobExperiense): self
-    {
-        if ($this->jobExperienses->removeElement($jobExperiense)) {
-            // set the owning side to null (unless already changed)
-            if ($jobExperiense->getUserProfile() === $this) {
-                $jobExperiense->setUserProfile(null);
-            }
-        }
 
         return $this;
     }

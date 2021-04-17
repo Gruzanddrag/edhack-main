@@ -47,24 +47,27 @@ class Internship
     private $organization;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="internships")
-     */
-    private $tags;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=JobSkill::class, inversedBy="internships")
-     */
-    private $requiredSkills;
-
-    /**
      * @ORM\OneToMany(targetEntity=InternshipResponse::class, mappedBy="internship")
      */
     private $internshipResponses;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateStart;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateEnd;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=InternshipCategory::class, inversedBy="internships")
+     */
+    private $category;
+
     public function __construct()
     {
-        $this->tags = new ArrayCollection();
-        $this->requiredSkills = new ArrayCollection();
         $this->internshipResponses = new ArrayCollection();
     }
 
@@ -145,61 +148,24 @@ class Internship
         return $this;
     }
 
-    /**
-     * @Groups({
-     *     "internship:collection:get",
-     *     "internship:item:get",
-     *     "user:read"
-     * })
-     * @return Collection|Tag[]
-     */
-    public function getTags(): Collection
-    {
-        return $this->tags;
-    }
-
-    public function addTag(Tag $tag): self
-    {
-        if (!$this->tags->contains($tag)) {
-            $this->tags[] = $tag;
-        }
-
-        return $this;
-    }
-
-    public function removeTag(Tag $tag): self
-    {
-        $this->tags->removeElement($tag);
-
-        return $this;
-    }
 
     /**
      * @Groups({
      *     "internship:collection:get",
      *     "internship:item:get"
      * })
-     * @return Collection|JobSkill[]
+     * @return array
      */
-    public function getRequiredSkills(): Collection
+    public function getRequiredSkills(): array
     {
-        return $this->requiredSkills;
-    }
-
-    public function addRequiredSkill(JobSkill $requiredSkill): self
-    {
-        if (!$this->requiredSkills->contains($requiredSkill)) {
-            $this->requiredSkills[] = $requiredSkill;
-        }
-
-        return $this;
-    }
-
-    public function removeRequiredSkill(JobSkill $requiredSkill): self
-    {
-        $this->requiredSkills->removeElement($requiredSkill);
-
-        return $this;
+        return [
+            [
+                'name' => 'C#'
+            ],
+            [
+                'name' => 'SQL'
+            ],
+        ];
     }
 
     /**
@@ -231,6 +197,42 @@ class Internship
                 $internshipResponse->setInternship(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateStart(): ?\DateTimeInterface
+    {
+        return $this->dateStart;
+    }
+
+    public function setDateStart(\DateTimeInterface $dateStart): self
+    {
+        $this->dateStart = $dateStart;
+
+        return $this;
+    }
+
+    public function getDateEnd(): ?\DateTimeInterface
+    {
+        return $this->dateEnd;
+    }
+
+    public function setDateEnd(\DateTimeInterface $dateEnd): self
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    public function getCategory(): ?InternshipCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?InternshipCategory $catrgory): self
+    {
+        $this->category = $catrgory;
 
         return $this;
     }

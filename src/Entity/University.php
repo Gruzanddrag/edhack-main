@@ -81,7 +81,7 @@ class University
     private $city;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="organization", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="university")
      */
     private $user;
 

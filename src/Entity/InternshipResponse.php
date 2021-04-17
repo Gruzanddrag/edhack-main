@@ -28,6 +28,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class InternshipResponse
 {
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_DENY = 2;
+    public const STATUS_ACCEPTED = 3;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
